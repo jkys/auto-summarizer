@@ -1,5 +1,3 @@
-package project_autosummarizer;
-
 import java.io.Serializable;
 import java.util.Hashtable;
 

@@ -1,8 +1,6 @@
-package project_autosummarizer;
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
-
 
 /**
  * Created by jonathankeys on 3/18/17.

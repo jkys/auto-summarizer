@@ -1,5 +1,3 @@
-package project_autosummarizer;
-
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -21,7 +19,7 @@ class Parser {
 
     private final LexicalizedParser parser = LexicalizedParser.loadModel(PCG_MODEL);
 
-    public Tree parse(String str) {                
+    public Tree parse(String str) {
         List<CoreLabel> tokens = tokenize(str);
         Tree tree = parser.apply(tokens);
         return tree;

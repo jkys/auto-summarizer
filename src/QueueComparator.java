@@ -1,4 +1,3 @@
-package project_autosummarizer;
 import java.util.Comparator;
 
 /**
