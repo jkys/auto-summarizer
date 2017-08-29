@@ -3,11 +3,17 @@
 This document will provide details regarding the web application auto-summarizer, providing details on the application summary, details of files, terminology, as well as technical details regarding the development of the application.
 
 ## Getting Started
-auto-summarizer can be cloned using both HTTPS and SSH via git commands.
+auto-summarizer can be cloned using both HTTPS and SSH via git commands, it requires maven to successfully import the Stanford NLP parser to handle getting parts of speech of certain sentences.
 
 ### Prerequisites
 
 To download and be able to make edits to the auto-summarizer project you will need to install git [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+
+This project is a Maven project so you should Maven installed. You can follow the directions to install maven at the following:
+* [Mac/OSX](https://www.mkyong.com/maven/install-maven-on-mac-osx/)
+ * If [Homebrew](https://brew.sh) is installed, run `brew install maven` in your terminal
+* [Windows](https://www.mkyong.com/maven/how-to-install-maven-in-windows/)
+* Linux: from the terminal run `wget http://mirror.olnevhost.net/pub/apache/maven/binaries/apache-maven-3.2.1-bin.tar.gz` to install maven.
 
 ### HTTPS
 
