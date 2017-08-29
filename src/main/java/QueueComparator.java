@@ -5,16 +5,16 @@ import java.util.Comparator;
  *
  * Used to order PriorityQueue from highest value to smallest.
  */
-public class QueueComparator implements Comparator<SentenceRanking>{
+public class QueueComparator implements Comparator<SentenceRanking> {
 
 
-  @Override
-  public int compare(SentenceRanking object1, SentenceRanking object2) {
-    double x = object2.getRank() - object1.getRank();
-    if (x > 0) {
-      return 1;
-    } else {
-      return -1;
+    @Override
+    public int compare(SentenceRanking object1, SentenceRanking object2) {
+        double x = object2.getRank() - object1.getRank();
+        if (x > 0) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
-  }
 }
