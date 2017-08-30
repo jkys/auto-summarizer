@@ -1,3 +1,5 @@
+package summarizers.util;
+
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.process.CoreLabelTokenFactory;
@@ -18,7 +20,7 @@ import java.util.Set;
  * order.
  */
 
-class Parser {
+public class Parser {
 
     private final String pcgModel = "edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz";
 
@@ -141,11 +143,13 @@ class Parser {
         Tree tree = parser.parse(str);
 
         List<Tree> leaves = tree.getLeaves();
+
         // Print words and Pos Tags
         for (Tree leaf : leaves) {
             Tree parent = leaf.parent(tree);
             System.out.print(leaf.label().value() + "-" + parent.label().value() + " ");
         }
+
         System.out.println();
     }
 }

@@ -1,8 +1,12 @@
+package summarizers.util;
+
 import java.io.Serializable;
 import java.util.Hashtable;
 
 /**
  * Created by jonathankeys on 4/6/17.
+ *
+ * Artcle is a serialiable Hashtable<String, Double> to be able to persist the inverse document frquency method.
  */
 public class Article implements Serializable {
 

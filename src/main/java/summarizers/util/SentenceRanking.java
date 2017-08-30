@@ -1,3 +1,5 @@
+package summarizers.util;
+
 /**
  * Created by jonathankeys on 3/20/17. Class to be implemented by priority queue to rank sentences in their correct
  * order.
