@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -23,11 +24,11 @@ class Base {
 
     private final String stopWordsPath = "text/stopWords.txt";
     private final String articlePath = "text/article.txt";
-    public final String learnerPath = "serialized/learner.ser";
+    final String learnerPath = "serialized/learner.ser";
 
-    protected Stack<String> stopWords;
-    protected Stack<String> articleSentences;
-    protected Stack<String> articleWords;
+    Stack<String> stopWords;
+    Stack<String> articleSentences;
+    Stack<String> articleWords;
 
     {
         try {
@@ -45,7 +46,7 @@ class Base {
      *
      * @return stack of strings containing each stop word.
      */
-    protected Stack<String> createStopWords(String path) throws FileNotFoundException {
+    private Stack<String> createStopWords(String path) throws FileNotFoundException {
         Stack<String> stopWords = new Stack<>();
         Scanner stopWordList = new Scanner(new FileReader(path));
         while (stopWordList.hasNextLine()) {
@@ -60,7 +61,7 @@ class Base {
      *
      * @return stack of strings containing each sentence of the article.
      */
-    protected Stack<String> createArticleSentences(String path) throws FileNotFoundException {
+    private Stack<String> createArticleSentences(String path) throws FileNotFoundException {
         Stack<String> articleSentences = new Stack<>();
         Pattern sentencePattern = Pattern
               .compile("[^.!?\\s][^.!?]*(?:[.!?](?!['\"]?\\s|$)[^.!?]*)*[" + ".!?]?['\"]?(?=\\s|$)",
@@ -84,7 +85,7 @@ class Base {
      *
      * @return stack of strings containing each individual word (without punctuation) of the article.
      */
-    protected Stack<String> createArticleWords(String path) throws FileNotFoundException {
+    private Stack<String> createArticleWords(String path) throws FileNotFoundException {
         Stack<String> articleWords = new Stack<>();
 
         Scanner article = new Scanner(new FileReader(path));
@@ -104,7 +105,7 @@ class Base {
      * @param articleWords List of strings containing each word in the article.
      * @return Json object containing all words as keys with their values being the amount of occurrences of that word.
      */
-    protected Hashtable<String, Integer> findWordOccurrences(List<String> articleWords) {
+    Hashtable<String, Integer> findWordOccurrences(List<String> articleWords) {
         Hashtable<String, Integer> builder = new Hashtable<>();
 
         Set<String> articleWordsSet = new HashSet<>(articleWords);
@@ -124,8 +125,7 @@ class Base {
      * @return Json object containing all words as keys with their values being the amount of occurrences of that word,
      * except if the key is a stop word - it will be set to 0.
      */
-    protected Hashtable<String, Double> findWordOccurrences(List<String> articleWords, List<String> stopWords,
-          int inverse) {
+    HashMap<String, Double> findWordOccurrences(List<String> articleWords, List<String> stopWords, int inverse) {
         Hashtable<String, Double> builder = new Hashtable<>();
 
         double occurrence;
@@ -151,8 +151,8 @@ class Base {
         return builder;
     }
 
-    protected Hashtable<String, Double> findWordOccurrences(List<String> articleWords, List<String> stopWords,
-          Hashtable<String, Double> allWords) {
+    Hashtable<String, Double> findWordOccurrences(List<String> articleWords, List<String> stopWords,
+          HashMap<String, Double> allWords) {
 
         Hashtable<String, Double> builder = new Hashtable<>();
 
@@ -182,7 +182,7 @@ class Base {
      * @return Json object containing each sentence as keys with their values being the amount of occurrences of words
      * in the sentence.
      */
-    protected Hashtable<String, Double> findWordInSentenceOccurrences(List<String> articleSentences,
+    Hashtable<String, Double> findWordInSentenceOccurrences(List<String> articleSentences,
           Hashtable<String, Double> mergedObject) {
 
         Hashtable<String, Double> builder = new Hashtable<>();
@@ -217,7 +217,7 @@ class Base {
      * occurrences of words in the sentence.
      * @return list of strings sorted so that the more important the sentence, the earlier on in the list it will occur.
      */
-    protected PriorityQueue<SentenceRanking> rankSentences(Hashtable<String, Double> sentenceValue) {
+    PriorityQueue<SentenceRanking> rankSentences(Hashtable<String, Double> sentenceValue) {
         Comparator<SentenceRanking> comparator = new QueueComparator();
         PriorityQueue<SentenceRanking> queue = new PriorityQueue<>(comparator);
         Set<String> keySet = sentenceValue.keySet();
@@ -242,7 +242,7 @@ class Base {
         }
     }
 
-    protected static void printLimitedSummary(PriorityQueue<SentenceRanking> object) {
+    static void printLimitedSummary(PriorityQueue<SentenceRanking> object) {
 
         System.out.println("enter a whole number (1-100)");
         Scanner in = new Scanner(System.in);
@@ -266,7 +266,7 @@ class Base {
      *
      * @param sentenceValue Json object with key/value pairs to be printed.
      */
-    protected static void printJson(Hashtable<String, Double> sentenceValue) {
+    private static void printJson(Hashtable<String, Double> sentenceValue) {
         Set<String> keySet = sentenceValue.keySet();
         for (String key : keySet) {
             System.out.println("Key: " + key + "\nValue: " + sentenceValue.get(key) + "\n");
@@ -278,7 +278,7 @@ class Base {
      *
      * @param stopWords List of strings to be printed out.
      */
-    protected static void printList(List<String> stopWords) {
+    private static void printList(List<String> stopWords) {
         stopWords.forEach(System.out::println);
     }
 
@@ -311,7 +311,7 @@ class Base {
      * @param wordsNoStopWordsValue Json object of all words and their occurrence amount.
      * @param sentenceValue Json object of all sentences and their ranking amount.
      */
-    protected static void printAll(List<String> stopWords, List<String> articleSentences, List<String> articleWords,
+    static void printAll(List<String> stopWords, List<String> articleSentences, List<String> articleWords,
           Hashtable<String, Double> wordsNoStopWordsValue, Hashtable<String, Double> sentenceValue) {
 
         System.out.println("--- JSON Word Object ---");
