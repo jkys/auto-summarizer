@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -13,22 +14,20 @@ import summarizers.util.SentenceRanking;
 
 /**
  * Created by jonathankeys on 8/29/17.
+ *
+ * Inveser Document Frequnecy class to handle the IDF method of summarizing and find the most important text within a
+ * document. This Class will deal with the logic of the algorithim and implement
  */
 public class InverseDocumentFrequency extends Base {
 
     public void main(String... args) throws IOException, ClassNotFoundException {
-        Hashtable<String, Double> currentArticleStopWords = findWordOccurrences(articleWords, stopWords, 0);
-
-        // Uncomment and comment rest of file to clear serial file and add new article
-        //    ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("src/learner.ser"));
-        //    outputStream.writeObject(new summarizers.util.Article(currentArticleStopWords));
-        //    outputStream.close();
+        HashMap<String, Double> currentArticleStopWords = findWordOccurrences(articleWords, stopWords, 0);
 
         ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(learnerPath));
         Article allWordsArticle = (Article) inputStream.readObject();
         inputStream.close();
 
-        Hashtable<String, Double> allWords = allWordsArticle.getArticle();
+        HashMap<String, Double> allWords = allWordsArticle.getArticle();
 
         Set<String> currentKeySet = currentArticleStopWords.keySet();
         Set<String> allKeySet = allWords.keySet();
@@ -57,5 +56,12 @@ public class InverseDocumentFrequency extends Base {
         Hashtable<String, Double> sentenceValue = findWordInSentenceOccurrences(articleSentences, finalAllWords);
         PriorityQueue<SentenceRanking> sentenceRanked = rankSentences(sentenceValue);
         //printLimitedSummary(sentenceRanked);
+    }
+
+    public void clear() throws IOException {
+        HashMap<String, Double> currentArticleStopWords = findWordOccurrences(articleWords, stopWords, 0);
+        ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("src/learner.ser"));
+        outputStream.writeObject(new summarizers.util.Article(currentArticleStopWords));
+        outputStream.close();
     }
 }
