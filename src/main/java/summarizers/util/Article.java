@@ -1,30 +1,22 @@
 package summarizers.util;
 
 import java.io.Serializable;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 /**
  * Created by jonathankeys on 4/6/17.
  *
- * Artcle is a serialiable Hashtable<String, Double> to be able to persist the inverse document frquency method.
+ * Article is a serializable HashMap<String, Double> to be able to persist the inverse document frquency method.
  */
 public class Article implements Serializable {
 
-    Hashtable<String, Double> article;
+    HashMap<String, Double> article;
 
-    public Hashtable<String, Double> getArticle() {
+    public HashMap<String, Double> getArticle() {
         return this.article;
     }
 
-    public void setArticle(Hashtable<String, Double> article) {
+    public Article(HashMap<String, Double> article) {
         this.article = article;
     }
-
-    public Article(Hashtable<String, Double> article) {
-        this.article = article;
-    }
-
-    public Article() {
-    }
-
 }
