@@ -1,5 +1,6 @@
 package summarizers;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.PriorityQueue;
 import summarizers.util.Parser;
@@ -17,7 +18,7 @@ public class StanfordParser extends Base {
             stanfordParser.put(item, 0.0);
         }
 
-        Hashtable<String, Double> sentenceValue = Parser.getHashTable(stanfordParser, stopWords);
+        HashMap<String, Double> sentenceValue = Parser.getHashTable(stanfordParser, stopWords);
         PriorityQueue<SentenceRanking> sentenceRanked = rankSentences(sentenceValue);
         printLimitedSummary(sentenceRanked);
     }

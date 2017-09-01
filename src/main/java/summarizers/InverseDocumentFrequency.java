@@ -51,9 +51,9 @@ public class InverseDocumentFrequency extends Base {
         outputStream.writeObject(allWordsArticle);
         outputStream.close();
 
-        Hashtable<String, Double> finalAllWords = findWordOccurrences(articleWords, stopWords, allWords);
+        HashMap<String, Double> finalAllWords = findWordOccurrences(articleWords, stopWords, allWords);
 
-        Hashtable<String, Double> sentenceValue = findWordInSentenceOccurrences(articleSentences, finalAllWords);
+        HashMap<String, Double> sentenceValue = findWordInSentenceOccurrences(articleSentences, finalAllWords);
         PriorityQueue<SentenceRanking> sentenceRanked = rankSentences(sentenceValue);
         //printLimitedSummary(sentenceRanked);
     }

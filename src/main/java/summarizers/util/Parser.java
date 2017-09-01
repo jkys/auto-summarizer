@@ -10,6 +10,7 @@ import edu.stanford.nlp.trees.Tree;
 
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
@@ -40,11 +41,11 @@ public class Parser {
         return tokenizer.tokenize();
     }
 
-    public static Hashtable<String, Double> getHashTable(final Hashtable<String, Double> hash,
+    public static HashMap<String, Double> getHashTable(final Hashtable<String, Double> hash,
           final List<String> stopWords) {
 
         Set<String> keySet = hash.keySet();
-        Hashtable<String, Double> builder = new Hashtable<>();
+        HashMap<String, Double> builder = new HashMap<>();
         Parser parser = new Parser();
 
         int numSentence = 0;

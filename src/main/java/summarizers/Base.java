@@ -19,6 +19,9 @@ import summarizers.util.SentenceRanking;
 
 /**
  * Created by jonathankeys on 8/29/17.
+ *
+ * Base class contains all the methods needed to retrieve and process data on
+ * the article/corpus which the data is from.
  */
 class Base {
 
@@ -30,6 +33,7 @@ class Base {
     Stack<String> articleSentences;
     Stack<String> articleWords;
 
+    // To initialize all the articles, sentences, and words
     {
         try {
             stopWords = createStopWords(stopWordsPath);
@@ -105,8 +109,8 @@ class Base {
      * @param articleWords List of strings containing each word in the article.
      * @return Json object containing all words as keys with their values being the amount of occurrences of that word.
      */
-    Hashtable<String, Integer> findWordOccurrences(List<String> articleWords) {
-        Hashtable<String, Integer> builder = new Hashtable<>();
+    HashMap<String, Integer> findWordOccurrences(List<String> articleWords) {
+        HashMap<String, Integer> builder = new HashMap<>();
 
         Set<String> articleWordsSet = new HashSet<>(articleWords);
         for (String word : articleWordsSet) {
@@ -126,7 +130,7 @@ class Base {
      * except if the key is a stop word - it will be set to 0.
      */
     HashMap<String, Double> findWordOccurrences(List<String> articleWords, List<String> stopWords, int inverse) {
-        Hashtable<String, Double> builder = new Hashtable<>();
+        HashMap<String, Double> builder = new HashMap<>();
 
         double occurrence;
 
@@ -151,10 +155,10 @@ class Base {
         return builder;
     }
 
-    Hashtable<String, Double> findWordOccurrences(List<String> articleWords, List<String> stopWords,
+    HashMap<String, Double> findWordOccurrences(List<String> articleWords, List<String> stopWords,
           HashMap<String, Double> allWords) {
 
-        Hashtable<String, Double> builder = new Hashtable<>();
+        HashMap<String, Double> builder = new HashMap<>();
 
         double occurrence;
 
@@ -182,10 +186,10 @@ class Base {
      * @return Json object containing each sentence as keys with their values being the amount of occurrences of words
      * in the sentence.
      */
-    Hashtable<String, Double> findWordInSentenceOccurrences(List<String> articleSentences,
-          Hashtable<String, Double> mergedObject) {
+    HashMap<String, Double> findWordInSentenceOccurrences(List<String> articleSentences,
+          HashMap<String, Double> mergedObject) {
 
-        Hashtable<String, Double> builder = new Hashtable<>();
+        HashMap<String, Double> builder = new HashMap<>();
         Set<String> keySet = mergedObject.keySet();
         Set<String> articleSentencesSet = new HashSet<>(articleSentences);
 
@@ -217,7 +221,7 @@ class Base {
      * occurrences of words in the sentence.
      * @return list of strings sorted so that the more important the sentence, the earlier on in the list it will occur.
      */
-    PriorityQueue<SentenceRanking> rankSentences(Hashtable<String, Double> sentenceValue) {
+    PriorityQueue<SentenceRanking> rankSentences(HashMap<String, Double> sentenceValue) {
         Comparator<SentenceRanking> comparator = new QueueComparator();
         PriorityQueue<SentenceRanking> queue = new PriorityQueue<>(comparator);
         Set<String> keySet = sentenceValue.keySet();
@@ -266,7 +270,7 @@ class Base {
      *
      * @param sentenceValue Json object with key/value pairs to be printed.
      */
-    private static void printJson(Hashtable<String, Double> sentenceValue) {
+    private static void printJson(HashMap<String, Double> sentenceValue) {
         Set<String> keySet = sentenceValue.keySet();
         for (String key : keySet) {
             System.out.println("Key: " + key + "\nValue: " + sentenceValue.get(key) + "\n");
@@ -304,15 +308,14 @@ class Base {
 
     /**
      * Print out all objects created and used in project.
-     *
-     * @param stopWords String list of all stop words.
+     *  @param stopWords String list of all stop words.
      * @param articleSentences String list of all sentences in article.
      * @param articleWords String list of all words in article.
      * @param wordsNoStopWordsValue Json object of all words and their occurrence amount.
      * @param sentenceValue Json object of all sentences and their ranking amount.
      */
     static void printAll(List<String> stopWords, List<String> articleSentences, List<String> articleWords,
-          Hashtable<String, Double> wordsNoStopWordsValue, Hashtable<String, Double> sentenceValue) {
+          HashMap<String, Double> wordsNoStopWordsValue, HashMap<String, Double> sentenceValue) {
 
         System.out.println("--- JSON Word Object ---");
         printJson(wordsNoStopWordsValue);

@@ -1,5 +1,6 @@
 package summarizers;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.PriorityQueue;
 import summarizers.util.SentenceRanking;
@@ -10,9 +11,9 @@ import summarizers.util.SentenceRanking;
 public class TermFrequency extends Base {
 
     public void main() {
-        Hashtable<String, Integer> wordsValue = findWordOccurrences(articleWords);
-        Hashtable<String, Double> wordsNoStopWordsValue = findWordOccurrences(articleWords, stopWords, 0);
-        Hashtable<String, Double> sentenceValue = findWordInSentenceOccurrences(articleSentences,
+        HashMap<String, Integer> wordsValue = findWordOccurrences(articleWords);
+        HashMap<String, Double> wordsNoStopWordsValue = findWordOccurrences(articleWords, stopWords, 0);
+        HashMap<String, Double> sentenceValue = findWordInSentenceOccurrences(articleSentences,
               wordsNoStopWordsValue);
 
         PriorityQueue<SentenceRanking> sentenceRanked = rankSentences(sentenceValue);
