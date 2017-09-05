@@ -4,21 +4,21 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.process.CoreLabelTokenFactory;
 import edu.stanford.nlp.process.PTBTokenizer;
-import edu.stanford.nlp.process.Tokenizer;
 import edu.stanford.nlp.process.TokenizerFactory;
 import edu.stanford.nlp.trees.Tree;
 
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
 
 /**
- * Created by jonathankeys on 3/20/17. Class to be implemented by priority queue to rank sentences in their correct
- * order.
+ * Created by jonathankeys on 3/20/17.
+ *
+ * Parser uses the Stanford NLP library to take advantage of its advanced parts of speech recongonizer to be able to
+ * rank sentences off of that.
  */
 
 public class Parser {
@@ -30,27 +30,32 @@ public class Parser {
 
     private final LexicalizedParser parser = LexicalizedParser.loadModel(pcgModel);
 
-    public Tree parse(final String str) {
-        List<CoreLabel> tokens = tokenize(str);
-        Tree tree = parser.apply(tokens);
-        return tree;
+    /**
+     * Tokenize each sentence with it's correct parts of speech
+     * @param sentence the sentence to tokenize
+     * @return returns a tree of the words with their given parts of speech locator
+     */
+    private Tree parse(final String sentence) {
+        List<CoreLabel> tokens = tokenizerFactory.getTokenizer(new StringReader(sentence)).tokenize();
+        return parser.apply(tokens);
     }
 
-    private List<CoreLabel> tokenize(final String str) {
-        Tokenizer<CoreLabel> tokenizer = tokenizerFactory.getTokenizer(new StringReader(str));
-        return tokenizer.tokenize();
-    }
-
-    public static HashMap<String, Double> getHashTable(final Hashtable<String, Double> hash,
+    /**
+     * Get's a HashMap of each sentence and it's value and return it to the user
+     * @param sentences A HashMap of sentences and a starting value of 0
+     * @param stopWords List of stop words to be omitted in value
+     * @return return a HashMap containing all the sentences and their representative value given the Stanford NLP
+     * parser
+     */
+    public static HashMap<String, Double> getHashMap(final List<String> sentences,
           final List<String> stopWords) {
 
-        Set<String> keySet = hash.keySet();
         HashMap<String, Double> builder = new HashMap<>();
         Parser parser = new Parser();
 
         int numSentence = 0;
 
-        for (String sentence : keySet) {
+        for (String sentence : sentences) {
 
             String[] splited = sentence.split("\\b+"); //split on word boundries
 
@@ -59,7 +64,6 @@ public class Parser {
             if (numSentence == 0) {
                 sentenceRank += 100000.0;
                 numSentence += 1;
-
             }
 
             for (String stopWord : stopWords) {
@@ -136,21 +140,5 @@ public class Parser {
             builder.put(sentence, (sentenceRank * 1.0));
         }
         return builder;
-    }
-
-    public static void main(String[] args) {
-        String str = "My dog also likes eating sausage.";
-        Parser parser = new Parser();
-        Tree tree = parser.parse(str);
-
-        List<Tree> leaves = tree.getLeaves();
-
-        // Print words and Pos Tags
-        for (Tree leaf : leaves) {
-            Tree parent = leaf.parent(tree);
-            System.out.print(leaf.label().value() + "-" + parent.label().value() + " ");
-        }
-
-        System.out.println();
     }
 }
