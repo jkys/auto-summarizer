@@ -1,12 +1,14 @@
 package summarizers;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.PriorityQueue;
 import summarizers.util.SentenceRanking;
 
 /**
  * Created by jonathankeys on 8/29/17.
+ *
+ * Term Frequency counts the usage of certain words outside of "stop" words to be able to rank sentences based on the
+ * word occurrences within the article which are unique.
  */
 public class TermFrequency extends Base {
 

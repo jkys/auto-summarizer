@@ -58,6 +58,12 @@ public class InverseDocumentFrequency extends Base {
         //printLimitedSummary(sentenceRanked);
     }
 
+    /**
+     * Clear willr eset the learner file which contains a HashMap of all words and their occurences. It erases all
+     * words and starts the learning from new.
+     *
+     * @throws IOException
+     */
     public void clear() throws IOException {
         HashMap<String, Double> currentArticleStopWords = findWordOccurrences(articleWords, stopWords, 0);
         ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("src/learner.ser"));
