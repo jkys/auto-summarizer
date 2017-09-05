@@ -27,6 +27,7 @@
       <groupId>edu.stanford.nlp</groupId>
       <artifactId>stanford-corenlp</artifactId>
       <version>3.8.0</version>
+      <classifier>models</classifier>
     </dependency>
   </dependencies>
 
