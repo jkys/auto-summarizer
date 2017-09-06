@@ -21,21 +21,18 @@ import java.util.List;
 
 public class Parser {
 
-    private final String pcgModel = "edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz";
-
-    private final TokenizerFactory<CoreLabel> tokenizerFactory = PTBTokenizer
-          .factory(new CoreLabelTokenFactory(), "invertible=true");
-
-    private final LexicalizedParser parser = LexicalizedParser.loadModel(pcgModel);
-
     /**
      * Tokenize each sentence with it's correct parts of speech
      * @param sentence the sentence to tokenize
      * @return returns a tree of the words with their given parts of speech locator
      */
     private Tree parse(final String sentence) {
-        List<CoreLabel> tokens = tokenizerFactory.getTokenizer(new StringReader(sentence)).tokenize();
-        return parser.apply(tokens);
+        return LexicalizedParser
+              .loadModel("edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz")
+              .apply(PTBTokenizer
+              .factory(new CoreLabelTokenFactory(), "invertible=true")
+              .getTokenizer(new StringReader(sentence))
+              .tokenize());
     }
 
     /**
@@ -55,7 +52,7 @@ public class Parser {
 
         for (String sentence : sentences) {
 
-            String[] splited = sentence.split("\\b+"); //split on word boundries
+            String[] split = sentence.split("\\b+"); //split on word boundaries
 
             Double sentenceRank = 0.0;
 
@@ -65,7 +62,7 @@ public class Parser {
             }
 
             for (String stopWord : stopWords) {
-                if (Arrays.asList(splited).contains(stopWord)) {
+                if (Arrays.asList(split).contains(stopWord)) {
                     sentenceRank -= 5.0;
                 }
             }
