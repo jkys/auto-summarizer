@@ -39,24 +39,6 @@ public class SentenceRanking implements Comparable<SentenceRanking> {
     }
 
     /**
-     * Setter method for updating sentence value. Should not be used.
-     *
-     * @param sentence class variable String sentence.
-     */
-    public void setSentence(String sentence) {
-        this.sentence = sentence;
-    }
-
-    /**
-     * Setter method for updating sentence rank.
-     *
-     * @param rank class variable int rank.
-     */
-    public void setRank(double rank) {
-        this.rank = rank;
-    }
-
-    /**
      * Compate value from sentenceRanking to the current one.
      *
      * @param object sentenceRanking object.

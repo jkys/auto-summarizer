@@ -128,7 +128,6 @@ public class Parser {
                         sentenceRank += 15.0;
                         break;
                     default:
-                        // None
                         break;
                 }
             }

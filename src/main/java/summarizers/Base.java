@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import summarizers.util.QueueComparator;
 import summarizers.util.SentenceRanking;
 
@@ -188,28 +189,22 @@ class Base {
      */
     HashMap<String, Double> findWordInSentenceOccurrences(List<String> articleSentences,
           HashMap<String, Double> mergedObject) {
-
         HashMap<String, Double> builder = new HashMap<>();
-        Set<String> keySet = mergedObject.keySet();
-        Set<String> articleSentencesSet = new HashSet<>(articleSentences);
 
-        //  printJson(words);
+        articleSentences.forEach(sentence -> {
+            double occurrences = 0.0;
 
-        for (String sentence : articleSentencesSet) {
-            Double occurrences = 0.0;
-            for (String key : keySet) {
+            for (String key : mergedObject.keySet()) {
 
                 if (sentence.contains(key)) {
-                    // 	String value = words.getString(key);
-                    // 	System.out.println(value);
-                    // Double value = ((Double)builder.get(key)).doubleValue();
-                    Double value = (Double) mergedObject.get(key);
+                    double value = mergedObject.get(key);
                     occurrences += value;
                 }
             }
 
             builder.put(sentence, (occurrences * 1.0));
-        }
+        });
+
         return builder;
     }
 
@@ -222,45 +217,23 @@ class Base {
      * @return list of strings sorted so that the more important the sentence, the earlier on in the list it will occur.
      */
     PriorityQueue<SentenceRanking> rankSentences(HashMap<String, Double> sentenceValue) {
-        Comparator<SentenceRanking> comparator = new QueueComparator();
-        PriorityQueue<SentenceRanking> queue = new PriorityQueue<>(comparator);
-        Set<String> keySet = sentenceValue.keySet();
-        for (String key : keySet) {
-            //queue.add(new summarizers.util.SentenceRanking(key, Integer.parseInt(sentenceValue.get(key).toString())));
-            // queue.add(new summarizers.util.SentenceRanking(key, Double.parseDoubrankSentencesle(sentenceValue.get(key).toString())));
-            queue.add(new SentenceRanking(key, sentenceValue.get(key)));
-        }
+        PriorityQueue<SentenceRanking> queue = new PriorityQueue<>(new QueueComparator());
+
+        queue.addAll(sentenceValue.keySet().stream().map(key -> new SentenceRanking(key, sentenceValue.get(key)))
+              .collect(Collectors.toList()));
         return queue;
     }
 
-    /**
-     * Print out all items in summarizers.util.SentenceRanking object and remove object after use.
-     *
-     * @param object PriorityQueue of summarizers.util.SentenceRanking object.
-     */
-    protected static void printSentenceRanking(PriorityQueue<SentenceRanking> object) {
-        while (!object.isEmpty()) {
-            SentenceRanking item = object.peek();
-            System.out.println(item.getSentence());
-            object.remove();
-        }
-    }
-
-    static void printLimitedSummary(PriorityQueue<SentenceRanking> object) {
-
+    static void printLimitedSummary(PriorityQueue<SentenceRanking> sentences) {
         System.out.println("enter a whole number (1-100)");
-        Scanner in = new Scanner(System.in);
-        int n = in.nextInt();
-        Double percent = n / 100.0 * 1.0;
-        int numArticleSentences = object.size();
-        double numDisplayed = percent * numArticleSentences;
+        double percent = (new Scanner(System.in).nextDouble()) / 100;
 
-        int nFinal = (int) Math.rint(numDisplayed);
+        int numToDisplay = (int) Math.rint(percent * sentences.size());
 
-        for (int i = 0; i < nFinal; i++) {
-            SentenceRanking item = object.peek();
+        for (int i = 0; i < numToDisplay; i++) {
+            SentenceRanking item = sentences.peek();
             System.out.println(item.getRank() + ": " + item.getSentence());
-            object.remove();
+            sentences.remove();
         }
 
     }
@@ -271,10 +244,7 @@ class Base {
      * @param sentenceValue Json object with key/value pairs to be printed.
      */
     private static void printJson(HashMap<String, Double> sentenceValue) {
-        Set<String> keySet = sentenceValue.keySet();
-        for (String key : keySet) {
-            System.out.println("Key: " + key + "\nValue: " + sentenceValue.get(key) + "\n");
-        }
+        sentenceValue.forEach((k, v) ->  System.out.println("Key: " + k + "\nValue: " + v + "\n"));
     }
 
     /**
@@ -284,25 +254,6 @@ class Base {
      */
     private static void printList(List<String> stopWords) {
         stopWords.forEach(System.out::println);
-    }
-
-    protected static Hashtable<String, Double> combineHashes(Hashtable<String, Double> combinedArticle,
-          Hashtable<String, Double> currentArticleWords) {
-
-        Set<String> keySet = combinedArticle.keySet();
-        Set<String> keySet1 = currentArticleWords.keySet();
-
-        for (String key : keySet) {
-            for (String key1 : keySet1) {
-                if (key.equalsIgnoreCase(key1)) {
-                    combinedArticle.replace(key, combinedArticle.get(key) + 1);
-                } else {
-                    combinedArticle.put(key, 1.0);
-                }
-            }
-        }
-
-        return combinedArticle;
     }
 
 

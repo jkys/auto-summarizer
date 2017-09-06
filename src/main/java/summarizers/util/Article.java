@@ -10,7 +10,7 @@ import java.util.HashMap;
  */
 public class Article implements Serializable {
 
-    HashMap<String, Double> article;
+    private HashMap<String, Double> article;
 
     public HashMap<String, Double> getArticle() {
         return this.article;
