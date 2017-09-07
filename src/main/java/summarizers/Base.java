@@ -3,10 +3,8 @@ package summarizers;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Scanner;
@@ -37,9 +35,9 @@ class Base {
     // To initialize all the articles, sentences, and words
     {
         try {
-            stopWords = createStopWords(stopWordsPath);
-            articleSentences = createArticleSentences(articlePath);
-            articleWords = createArticleWords(articlePath);
+            stopWords = createStopWords();
+            articleSentences = createArticleSentences();
+            articleWords = createArticleWords();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -51,12 +49,11 @@ class Base {
      *
      * @return stack of strings containing each stop word.
      */
-    private Stack<String> createStopWords(String path) throws FileNotFoundException {
+    private Stack<String> createStopWords() throws FileNotFoundException {
         Stack<String> stopWords = new Stack<>();
-        Scanner stopWordList = new Scanner(new FileReader(path));
+        Scanner stopWordList = new Scanner(new FileReader(stopWordsPath));
         while (stopWordList.hasNextLine()) {
-            String stopWord = stopWordList.nextLine();
-            stopWords.push(stopWord);
+            stopWords.push(stopWordList.nextLine());
         }
         return stopWords;
     }
@@ -66,20 +63,18 @@ class Base {
      *
      * @return stack of strings containing each sentence of the article.
      */
-    private Stack<String> createArticleSentences(String path) throws FileNotFoundException {
+    private Stack<String> createArticleSentences() throws FileNotFoundException {
         Stack<String> articleSentences = new Stack<>();
         Pattern sentencePattern = Pattern
               .compile("[^.!?\\s][^.!?]*(?:[.!?](?!['\"]?\\s|$)[^.!?]*)*[" + ".!?]?['\"]?(?=\\s|$)",
                     Pattern.MULTILINE | Pattern.COMMENTS);
 
-        Scanner article = new Scanner(new FileReader(path));
+        Scanner article = new Scanner(new FileReader(articlePath));
 
         while (article.hasNextLine()) {
-            String line = article.nextLine();
-            Matcher matcher = sentencePattern.matcher(line);
+            Matcher matcher = sentencePattern.matcher(article.nextLine());
             while (matcher.find()) {
-                String sentence = matcher.group();
-                articleSentences.push(sentence);
+                articleSentences.push(matcher.group());
             }
         }
         return articleSentences;
@@ -90,17 +85,14 @@ class Base {
      *
      * @return stack of strings containing each individual word (without punctuation) of the article.
      */
-    private Stack<String> createArticleWords(String path) throws FileNotFoundException {
+    private Stack<String> createArticleWords() throws FileNotFoundException {
         Stack<String> articleWords = new Stack<>();
 
-        Scanner article = new Scanner(new FileReader(path));
+        new Scanner(new FileReader(articlePath)).forEachRemaining(word -> {
+            word = word.replaceAll("[^a-zA-Z ]", "");
+            if (!word.equalsIgnoreCase("")) articleWords.push(word.toLowerCase());
+        });
 
-        while (article.hasNext()) {
-            String word = article.next().replaceAll("[^a-zA-Z ]", "").toLowerCase();
-            if (!word.equals("")) {
-                articleWords.push(word);
-            }
-        }
         return articleWords;
     }
 
@@ -112,12 +104,7 @@ class Base {
      */
     HashMap<String, Integer> findWordOccurrences(List<String> articleWords) {
         HashMap<String, Integer> builder = new HashMap<>();
-
-        Set<String> articleWordsSet = new HashSet<>(articleWords);
-        for (String word : articleWordsSet) {
-            int occurrence = Collections.frequency(articleWords, word);
-            builder.put(word, occurrence);
-        }
+        articleWords.forEach(word -> builder.put(word, Collections.frequency(articleWords, word)));
         return builder;
     }
 
@@ -133,17 +120,11 @@ class Base {
     HashMap<String, Double> findWordOccurrences(List<String> articleWords, List<String> stopWords, int inverse) {
         HashMap<String, Double> builder = new HashMap<>();
 
-        double occurrence;
+        articleWords.forEach(word -> {
+            int frequency = Collections.frequency(articleWords, word);
+            boolean isInverse = inverse == 1;
 
-        Set<String> articleWordsSet = new HashSet<>(articleWords);
-        for (String word : articleWordsSet) {
-            if (inverse == 1) {
-
-                occurrence = (1.0 / (Collections.frequency(articleWords, word))) * 1.0;
-
-            } else {
-                occurrence = Collections.frequency(articleWords, word);
-            }
+            double occurrence = isInverse ? 1/frequency : frequency;
 
             for (String stopWord : stopWords) {
                 if (word.equalsIgnoreCase(stopWord)) {
@@ -152,7 +133,7 @@ class Base {
                 }
             }
             builder.put(word, occurrence);
-        }
+        });
         return builder;
     }
 
@@ -189,20 +170,12 @@ class Base {
      */
     HashMap<String, Double> findWordInSentenceOccurrences(List<String> articleSentences,
           HashMap<String, Double> mergedObject) {
+
         HashMap<String, Double> builder = new HashMap<>();
-
         articleSentences.forEach(sentence -> {
-            double occurrences = 0.0;
-
-            for (String key : mergedObject.keySet()) {
-
-                if (sentence.contains(key)) {
-                    double value = mergedObject.get(key);
-                    occurrences += value;
-                }
-            }
-
-            builder.put(sentence, (occurrences * 1.0));
+            final double[] occurrences = {0.0};
+            mergedObject.keySet().forEach(k -> occurrences[0] += sentence.contains(k) ? mergedObject.get(k) : 0);
+            builder.put(sentence, (occurrences[0]));
         });
 
         return builder;
